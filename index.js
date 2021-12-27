@@ -282,7 +282,259 @@ function reject(array, func) {
 module.exports.reject = reject;
 
 /**
+ * partition: This function takes in an array to iterate through and a function on which
+ * to call each element of the array on. The function tests for boolean values and RETURNS
+ * a new array made up of 2 sub arrays. The first subarray are values that passed for truthy,
+ * and the second subarray are values that passed for falsey. 
  * 
+ * @param { array } array: Function takes in an array of values to iterate through. 
+ * @param { function } func: Function takes in another function that will be called on
+ * each element in the array to test for truthy and falsey values.
  * 
+ * @returns { array }: Function returns a new array that will have 2 sub arrays
+ * [[...], [...]]; The first sub array is filled with values that passed for TRUTHY
+ * when passed into the func parameter, and the second subarray is filled with values
+ * that passed for FALSEY when passed into the func parameter. 
  * 
  */
+
+function partition(array, func) {
+    var truthy = [];
+    var falsey = [];
+    var partitioned = [];
+    for (var i = 0; i < array.length; i++) {
+        if (func(array[i], i, array) === true) {
+        truthy.push(array[i]);
+    } else {
+        falsey.push(array[i]);
+        }
+    }
+    partitioned.push(truthy);
+    partitioned.push(falsey);
+    return partitioned;
+}
+
+module.exports.partition = partition;
+
+/**
+ * map: This function takes in a collection to iterate through and a function on which
+ * to call onto each element of that array. It returns a NEW ARRAY populated with the
+ * RESULTS of calling the input function on EVERY ELEMENT in the input array. 
+ * 
+ * @param { array or object } collection: Function takes in an array or object to iterate
+ * through. 
+ * @param { function } func: Function takes in another function on which to call onto
+ * each element of the collection. 
+ * 
+ * @returns: { arary }: Function returns a new array filled with values from the
+ * original array after they have been passed into the provided function.
+ * 
+ */
+
+function map(collection, func) {
+    var mapped = [];
+    if (Array.isArray(collection)) {
+        for (var i = 0; i < collection.length; i++) {
+            mapped.push(func(collection[i], i, collection));
+        }
+    } else {
+        for (var key in collection) {
+            mapped.push(func(collection[key], key, collection));
+        }
+    }
+    return mapped;
+}
+
+module.exports.map = map;
+
+/**
+ * pluck: This function takes in an array of objects to iterate through and a property
+ * that we are searching for. It returns an array of the VALUES from the objects that are assigned
+ * to the given property provided.
+ * 
+ * @param { array of object } array: Function takes an array of objects to iterate through.
+ * @param { property } property: Function takes in a property/key that we will 
+ * be searching for in each of the objects.
+ * 
+ * @returns { array }: Function returns an array with all the values that tested
+ * true in the map function inside of this pluck function. They would test TRUE if the
+ * objects within the array contained the input property parameter. 
+ * 
+ */
+
+function pluck(array, property) {
+       // we must use our new map function
+    // so plucked will be equal to the mapped array of object's properties
+    // map takes in the array of objects and a function that tests each object in the array
+    var plucked = _.map(array, function(object) {
+        // we just want map to return an array of the values at each object that have the property we are passing in
+        // so we look at objects[that have this property] <--- returns the value
+        return object[property];
+    });
+    // then we just return that mapped variable
+    return plucked;
+}
+
+module.exports.pluck = pluck;
+
+/**
+ * every: This function takes in an array or object to iterate through and a function on which
+ * to call each element of the collection on. This function tests to see if EVERY element
+ * in the collection tests for TRUE. If so, true is returned; otherwise, false is returned.
+ * 
+ * @param { array or object } collection: This function takes in an array or object to
+ * iterate through.
+ * @param { function } func: This function takes in another function to call on each
+ * element in the collections.
+ * 
+ * @returns { boolean }: This function returns a boolean statement based on whether or not
+ * ALL elements in the collection tested for TRUE when passed into the input function.
+ * 
+ */
+
+function every(collection, func) {
+    // create a default result statement that can be easily reassigned if a test returns false in a loop
+    let result = true;
+    // if function is not given...
+    if(func === undefined) {
+        // loop through collection
+        for (var i = 0; i < collection.length; i++) {
+            // if current iteration results in a truthy value return true
+            if(collection[i]) {
+                return true;
+                //otherwise return false
+            } else {
+                return false;
+            } 
+        }
+    }
+    // if collection is an array
+    if (Array.isArray(collection)) {
+        // call the function on the current element, its index, and the collection itself
+        for (var i = 0; i < collection.length; i++) {
+            // if any iteration returns a false statement
+            if (func(collection[i], i, collection) === false) {
+                //reassign result to = false;
+                result = false;
+            }
+        }
+    } else {
+        // if collection is an object
+        for (var key in collection) {
+            // call function on current value, key, and collection
+            // if ANY item returns false, reassign result to false
+            if (func(collection[key], key, collection) === false) {
+                result = false;
+            }
+        }
+    }
+    // return our final result
+    return result;
+}
+
+module.exports.every = every;
+
+/**
+ * some: This function takes in an array or object to iterate through and a function on which
+ * to call each item in the collection. A boolean statement is returned based on whether or not
+ * AT LEAST ONE item in the collection passes for TRUE when passed into the provided function.
+ * 
+ * @param { array or object } collection: Function takes in an array or object to iterate through.
+ * @param { function } func: Function takes in another function on which to call each item 
+ * in the provided collection.
+ * 
+ * @returns { boolean }: This function returns a boolean statements based on whether or not
+ * AT LEAST ONE item in the provided collection tests for TRUE when passed into the provided function.
+ * True if so; false, otherwise. 
+ * 
+ */
+
+function some(collection, func) {
+    let result = false;
+    // if function is not provided
+    if(func === undefined) {
+        //loop through collection
+        for (var i = 0; i < collection.length; i++) {
+            // if at least ONE element results in a truthy value, return true
+            if(collection[i]) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    // if collection is an array
+    if (Array.isArray(collection)) {
+        for (var i = 0; i < collection.length; i++) {
+            if(func(collection[i], i, collection) === true) {
+                result = true;
+            }
+        }
+    } else {
+        for (var key in collection) {
+            if(func(collection[key], key, collection) === true) {
+                result = true;
+            }
+        }
+    }
+    return result;
+}
+
+module.exports.some = some;
+
+/**
+ * reduce: This function is designed to iterate through an array and create an 
+ * ACCUMULATION EFFECT that will result in a SINGLE VALUE being RETURNED.
+ *   
+ * @param { array } array: Function takes in an array to iterate through. 
+ * @param { function } func: Function takes in another function that is called on after
+ * each iteration in the accumulation effect.
+ * @param { seed } seed: Function takes in a seed value that tells the function where the
+ * accumulation effect to start. 
+ *
+ * @returns { any data type }: Function returns a SINGLE VALUE which is the input function's
+ * accumulated result. 
+ * 
+ */
+
+function reduce(array, func, seed) {
+    if (seed === undefined) {
+        seed = array[0]; // assign seed the value of array[0]
+        for (var i = 1; i < array.length; i++) { // since seed is already at the first element, we want to start at next iundex
+            seed = func(seed, array[i], i); // prev, current, index, seed is reset at each iteration in loop, its how we're creating the accumulation effect
+        }
+    } else { // if seed !== undefined
+        for (var i = 0; i < array.length; i++) { // since seed is already initialized..
+            seed = func(seed, array[i], i);
+        }
+    }
+    return seed;
+}
+
+module.exports.reduce = reduce;
+
+/**
+ * extend: This function takes in an object AND as many other objects that the
+ * user wants to copy over into the first object. The original object will be updated
+ * with all the other objects' key/value pairs in the order in which they appear
+ * in the PARAMETERS list.
+ * 
+ * @param { object } object: Function takes in a 1st object that will be the object
+ * to be copied INTO.
+ * @param { object } object2: The function takes in another object that will be
+ * copied into the first object in the parameter list.
+ * *** .... AND SO ON, with however many objects are provided ****
+ * 
+ * @returns { object }: The function returns the first object with all the other 
+ * objects' key/value pairs included in it.
+ * 
+ */
+
+function extend(object) {
+    for (var i = 0; i < arguments.length; i++) {
+        Object.assign(object, arguments[i]);
+        };
+    return object;
+}
+
+module.exports.extend = extend;
