@@ -175,3 +175,114 @@ function indexOf(array, value) {
 }
 
 module.exports.indexOf = indexOf;
+
+/**
+ * contains: This function takes in an array and a value and returns a boolean statement
+ * letting us know whether or not that array contains said value. 
+ * 
+ * @param { array } array: Function takes in an array of values to iterate through.
+ * @param { any value } value: Function takes in any value that we will be looking for
+ * in the input array.
+ * 
+ * @returns { boolean }: Function returns a boolean statement whether or not the input array
+ * contains the value input. True if so; false otherwise. 
+ *
+ */
+
+function contains(array, value) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+
+module.exports.contains = contains; 
+
+/**
+ * unique: This function is designed to take in an array and return a new array
+ * with all of the duplicated removed. 
+ * 
+ * @param { array } array: Function takes in an array to iterate through.
+ * 
+ * @returns { array }: The function returns a new array with all the duplicates removed.
+ * We were able to do this by creating an output array and using our _indexOf function. 
+ * Since the indexOf function returns -1 if the array doesn't contain a value. We were
+ * able to use that logic to return this new array. 
+ * 
+ */
+
+function unique(array) {
+    var uniqueArr = [];
+    for (let i = 0; i < array.length; i++) {
+        // if the the indexOf function checks the uniqueArr and array[i] (iterated item in input array) is not in there (= to -1) push that item into unique array
+        if (uniqueArr.indexOf(array[i]) === -1) {
+            uniqueArr.push(array[i]);
+        }
+    }
+    return uniqueArr;
+}
+
+module.exports.unique = unique;
+
+/**
+ * filter: This function takes an array and an input function and returns a NEW ARRAY
+ * that contains values from the original array that passed FOR TRUE in the input function.
+ * 
+ * @param { array } array: Function takes in an array of values to iterate through.
+ * @param { function } func: Function takes in another function in which to call 
+ * onto each element of the input array.
+ * 
+ * @returns { array }: Function returns an array of values that PASSED FOR TRUE based on
+ * conditions set by the input function. 
+ * 
+ */
+
+function filter(array, func) {
+        // create output filtered array
+        var filtered = [];
+        // loop through input array
+        for (var i = 0; i < array.length; i++) {
+            // if func called with current element (array[i]), it's index (i), and the array (array) returns a true result
+            if (func(array[i], i, array) === true) {
+                // then push that current element into the filtered array
+                filtered.push(array[i]);
+            }
+        }
+        // return output
+        return filtered;
+}
+
+module.exports.filter = filter;
+
+/**
+ * reject: Function takes in an array of values to iterate through and an input function and
+ * returns a NEW ARRAY that contains values that passed for FALSE in the input function.
+ * 
+ * @param { array } array: Function takes in an array of values to iterate through.
+ * @param { function } func: Function takes in another function in which to call onto each
+ * element of the input array.
+ * 
+ * @returns { array }: Function returns a new array of all the values of the input array that 
+ * passed FOR FALSE based on conditions tested by the input function.
+ * 
+ */
+
+function reject(array, func) {
+    var rejected = [];
+    for (var i = 0; i < array.length; i++) {
+        if (func(array[i], i, array) === false) {
+            rejected.push(array[i]);
+        }
+    }
+    return rejected; 
+}
+
+module.exports.reject = reject;
+
+/**
+ * 
+ * 
+ * 
+ */
